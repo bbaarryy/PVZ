@@ -14,14 +14,20 @@ void main_field::draw(sf::RenderWindow& Win){
     field_square.setPosition(0,0);
     
     bool ch = 0;
+    bool str_ch = 0;
     for(int j = 0 ; j < (this->ny);j++){
+        ch = str_ch;
+        str_ch = !str_ch;
+        field_square.setPosition(0,field_square.getSize().y * (j));
+
         for(int i = 0 ; i < (this->nx) ; i ++){
-            Win.draw(field_square);
+            
             if(ch){field_square.setFillColor(this->major_c);}
             else{field_square.setFillColor(this->minor_c);}
+            Win.draw(field_square);
+
             ch = !ch;
             field_square.move(field_square.getSize().x,0);
         }
-        field_square.setPosition(0,field_square.getSize().y * (j+1));
     }
 }
