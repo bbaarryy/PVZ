@@ -1,7 +1,7 @@
 # PVZ
 My OOP game
 
-#How to launch
+# How to launch
 
 cd ./source
 ./init.sh && ./a.out
