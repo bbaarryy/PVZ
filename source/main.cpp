@@ -4,18 +4,13 @@
 #include <chrono>
 #include <ctime>
 #include <thread>
+#include "my_vector.hpp"
+#include <random>
+#include <chrono>
+#include <ctime>
+#include <thread>
 
-void show(std::vector<plants*>& v, sf::RenderWindow& win){
-    for(int j = 0 ; j < v.size();j++){
-        (*v[j]).Draw(win);
-    }
-}
-void move(std::vector<plants*>& v, sf::RenderWindow& win){
-    for(int j = 0 ; j < v.size();j++){
-        float curr_y = (*v[j]).get_coords().y;
-        if (curr_y !=0) (*v[j]).Move(0,-1);
-    }
-}
+std::mt19937 rnd2(std::chrono::steady_clock::now().time_since_epoch().count());
 
 int main(){
     unsigned int XXX,YYY;
@@ -28,10 +23,14 @@ int main(){
     
     window.display();
 
+
     ///
-    std::vector<plants*> my_plants;
+    myvector<plants*> my_plants;
     my_plants.push_back(tom_p);
     ///
+
+    int q=0;
+    int expect=rnd2()%200 + 100;
 
     while (window.isOpen()){
         sf::Event event;
@@ -42,8 +41,22 @@ int main(){
         }
         window.clear();
         FIELD.draw(window);
-        show(my_plants, window);
-        move(my_plants,window);
+        my_plants.show(window);
+        my_plants.move(window);
+
+        ///touch technics
+        
+        
+
+
+        ///
+
+        q++;
+        if(q==expect){
+            expect=rnd2()%200 + 100;
+            q=0;
+            my_plants.spawn(YYY,rnd2()%2+1);
+        }
 
         window.display();
         std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Pause for 50 milliseconds
