@@ -7,8 +7,10 @@ class plants{
     protected:
         sf::Texture herotexture;
         sf::Sprite shsprite;
+        sf::RectangleShape rectangle;
         float x,y;
         float szx, szy;
+        bool chosen;
     public:
         plants(){
             herotexture.loadFromFile("../images/sesame.png");
@@ -16,8 +18,13 @@ class plants{
             shsprite.setScale({0.13,0.13});
             this->szx = shsprite.getScale().x * herotexture.getSize().x;
             this->szy = shsprite.getScale().y * herotexture.getSize().y;
+            chosen=0;
         }
         void Draw(sf::RenderWindow& window) {
+            rectangle.setPosition(this->x,this->y);
+            rectangle.setSize({this->szx, this->szy});
+            rectangle.setFillColor(sf::Color(250, 0, 50));
+            window.draw(rectangle);
             shsprite.setPosition({this->x, this->y });
             window.draw(shsprite);
         }
@@ -30,6 +37,13 @@ class plants{
         }
         sf::Vector2f PlantGetSize(){
             return( sf::Vector2f(this->szx,this->szy) );
+        }
+        void Select(){
+            this->chosen = 1;
+        }
+        void setCoords(int X,int Y){
+            this->y = Y;
+            this->x = X;
         }
 };
 

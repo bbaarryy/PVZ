@@ -17,7 +17,6 @@ public:
             float curr_y = (*(*this)[j]).get_coords().y;
             if (j!=0 && curr_y >= (*(*this)[j-1]).get_coords().y + (*(*this)[j]).PlantGetSize().y ) (*(*this)[j]).Move(0,-1);
             if (j==0 && curr_y >= 0) (*(*this)[j]).Move(0,-1);
-           
         }
     }
 
