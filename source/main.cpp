@@ -63,17 +63,16 @@ int main(){
         ///touch technics
 
 
-
         if (event.type == sf::Event::MouseButtonPressed){
-            std::cout << MyMouse.getPosition().x << ' ' << MyMouse.getPosition().y << '\n';
+            std::cout << MyMouse.getPosition(window).x << ' ' << MyMouse.getPosition().y << '\n';
 
-            int MouseX = MyMouse.getPosition().x;
-            int MouseY = MyMouse.getPosition().y;
+            int MouseX = MyMouse.getPosition(window).x;
+            int MouseY = MyMouse.getPosition(window).y;
 
             circle.setPosition({MouseX, MouseY});
             window.draw(circle);
 
-            if(MouseX <= 120){
+            if(MouseX <= SQ_X){
                 for(int i = 0 ; i < conv_plants.size();i++){
                     if( ((conv_plants[i]->get_coords().y) < MouseY) && (MouseY < (conv_plants[i]->get_coords().y)+(conv_plants[i]->PlantGetSize().y))){
                         std::cout << (conv_plants[i]->get_coords().y)-(conv_plants[i]->PlantGetSize().y/2) << " : " << (conv_plants[i]->get_coords().y)+(conv_plants[i]->PlantGetSize().y/2) << '\n';
@@ -85,7 +84,7 @@ int main(){
             else{
                 if(chosen_index != -1){
                     plants* curr = conv_plants[chosen_index];
-                    curr->setCoords((MouseX / SQ_X ) * SQ_X, (MouseY / SQ_Y)  * SQ_Y);
+                    curr->setCoords((MouseX / SQ_X ) * SQ_X + 10, (MouseY / SQ_Y)  * SQ_Y);
                     field_plants.push_back(conv_plants[chosen_index]);
                     conv_plants.erase(conv_plants.begin() + chosen_index);
                     chosen_index = -1;
