@@ -24,7 +24,15 @@ class plants{
             rectangle.setPosition(this->x,this->y);
             rectangle.setSize({this->szx, this->szy});
             rectangle.setFillColor(sf::Color(250, 0, 50));
-            window.draw(rectangle);
+            //DEBUG
+            //window.draw(rectangle);
+            //
+            if(this->chosen){
+                shsprite.setColor(sf::Color(255, 255, 255, 128));
+            }
+            else{
+                shsprite.setColor(sf::Color(255, 255, 255, 255));
+            }
             shsprite.setPosition({this->x, this->y });
             window.draw(shsprite);
         }
@@ -40,6 +48,9 @@ class plants{
         }
         void Select(){
             this->chosen = 1;
+        }
+        void UnSelect(){
+            this->chosen = 0;
         }
         void setCoords(int X,int Y){
             this->y = Y;

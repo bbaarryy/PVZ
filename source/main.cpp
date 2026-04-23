@@ -9,12 +9,18 @@
 #include <chrono>
 #include <ctime>
 #include <thread>
+#include <string>
 
 std::mt19937 rnd2(std::chrono::steady_clock::now().time_since_epoch().count());
 
 int chosen_index = -1;
 
-int main(){
+int main(int args, char** argv){
+    int speed;
+    speed = std::stoi(argv[1]);
+    int move_step = speed;
+
+
     unsigned int XXX,YYY,NX,NY;
     XXX=700;YYY=600;NX=8;NY=8;
     int SQ_X = XXX/(NX+1);
@@ -29,14 +35,23 @@ int main(){
     ///
     myvector<plants*> conv_plants;
     conv_plants.push_back(tom_p);
-    ///
     myvector<plants*> field_plants;
     ///
 
+    ///
+    vector<vector<bool>> field_used(NX,vector<bool> (NY,0));
+    int last_chosen = 0;
+    ///
+
     int q=0;
-    int expect=rnd2()%200 + 100;
+    int expect=rnd2()%(200/speed) + (100/speed);
 
     sf::Mouse MyMouse;
+    sf::CircleShape check_circle;
+    check_circle.setRadius(15);
+    check_circle.setOutlineColor(sf::Color::Red);
+    check_circle.setOutlineThickness(5);
+    check_circle.setPosition({10, 20});
 
     while (window.isOpen()){
         sf::Event event;
@@ -49,34 +64,21 @@ int main(){
         FIELD.draw(window);
         conv_plants.show(window);
         field_plants.show(window);
-        conv_plants.move(window);
-
-
-
-
-        ///////
-        sf::CircleShape circle;
-        circle.setRadius(15);
-        circle.setOutlineColor(sf::Color::Red);
-        circle.setOutlineThickness(5);
-        circle.setPosition({10, 20});
-        ///touch technics
-
+        conv_plants.move(window,move_step);
 
         if (event.type == sf::Event::MouseButtonPressed){
-            std::cout << MyMouse.getPosition(window).x << ' ' << MyMouse.getPosition().y << '\n';
+            int MouseX = (int)MyMouse.getPosition(window).x;
+            int MouseY = (int)MyMouse.getPosition(window).y;
 
-            int MouseX = MyMouse.getPosition(window).x;
-            int MouseY = MyMouse.getPosition(window).y;
-
-            circle.setPosition({MouseX, MouseY});
-            window.draw(circle);
-
+            check_circle.setPosition({MouseX, MouseY});
+            window.draw(check_circle);
+            conv_plants[last_chosen]->UnSelect();
             if(MouseX <= SQ_X){
                 for(int i = 0 ; i < conv_plants.size();i++){
                     if( ((conv_plants[i]->get_coords().y) < MouseY) && (MouseY < (conv_plants[i]->get_coords().y)+(conv_plants[i]->PlantGetSize().y))){
-                        std::cout << (conv_plants[i]->get_coords().y)-(conv_plants[i]->PlantGetSize().y/2) << " : " << (conv_plants[i]->get_coords().y)+(conv_plants[i]->PlantGetSize().y/2) << '\n';
+                        
                         conv_plants[i]->Select();
+                        last_chosen = i;
                         chosen_index = i;
                     }
                 }
@@ -84,19 +86,24 @@ int main(){
             else{
                 if(chosen_index != -1){
                     plants* curr = conv_plants[chosen_index];
-                    curr->setCoords((MouseX / SQ_X ) * SQ_X + 10, (MouseY / SQ_Y)  * SQ_Y);
-                    field_plants.push_back(conv_plants[chosen_index]);
-                    conv_plants.erase(conv_plants.begin() + chosen_index);
+                    if(field_used[MouseX / SQ_X][MouseY / SQ_Y] == 0){
+                        field_used[MouseX / SQ_X][MouseY / SQ_Y] = 1;
+                        curr->setCoords((MouseX / SQ_X ) * SQ_X + 10, (MouseY / SQ_Y)  * SQ_Y);
+                        field_plants.push_back(conv_plants[chosen_index]);
+                        conv_plants.erase(conv_plants.begin() + chosen_index);
+                    }
+                    curr->UnSelect();
                     chosen_index = -1;
                 }
             }
         }
 
-        ///
 
+
+        ///generate---spawn
         q++;
         if(q==expect){
-            expect=rnd2()%200 + 100;
+            expect=rnd2()%(200/speed) + (100/speed);
             q=0;
             conv_plants.spawn(YYY,rnd2()%2+1);
         }
