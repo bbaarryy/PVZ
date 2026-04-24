@@ -1,14 +1,12 @@
 #include <iostream>
 #include "field.hpp"
 #include "plants.hpp"
-#include <chrono>
-#include <ctime>
-#include <thread>
+#include "bullet.hpp"
 #include "my_vector.hpp"
-#include <random>
 #include <chrono>
 #include <ctime>
 #include <thread>
+#include <random>
 #include <string>
 
 std::mt19937 rnd2(std::chrono::steady_clock::now().time_since_epoch().count());
@@ -39,12 +37,19 @@ int main(int args, char** argv){
     ///
 
     ///
+    std::vector<bullet*> bullets;
+    ///
+
+    ///
     vector<vector<bool>> field_used(NX,vector<bool> (NY,0));
     int last_chosen = 0;
     ///
 
     int q=0;
     int expect=rnd2()%(200/speed) + (100/speed);
+
+    int q_bull=0;
+    int expect_bull=rnd2()%(50/speed) + (30/speed);
 
     sf::Mouse MyMouse;
     sf::CircleShape check_circle;
@@ -106,6 +111,30 @@ int main(int args, char** argv){
             expect=rnd2()%(200/speed) + (100/speed);
             q=0;
             conv_plants.spawn(YYY,rnd2()%2+1);
+
+        }
+
+        //generate---bullets
+        q_bull++;
+        if(q_bull == expect_bull){
+            q_bull=0;
+            int expect_bull=rnd2()%(50/speed) + (30/speed);
+            for(int i = 0 ; i < field_plants.size();i++){
+                if(rnd2()%5 == 0){
+                    field_plants[i]->shoot(bullets);
+                    std::cout << bullets.size() << '\n';
+                }
+            }        
+        }
+        
+        for(int i = 0 ; i < bullets.size();i++){
+            bullets[i]->Move(speed);
+            bullets[i]->Draw(window);
+            
+            if(bullets[i]->get_coords().x > XXX || bullets[i]->get_coords().x > YYY){
+                delete bullets[i];
+                bullets.erase(bullets.begin() + i);
+            }
         }
 
         window.display();

@@ -2,6 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <iostream>
+#include <vector>
+#include "bullet.hpp"
 
 class plants{
     protected:
@@ -11,6 +13,7 @@ class plants{
         float x,y;
         float szx, szy;
         bool chosen;
+
     public:
         plants(){
             herotexture.loadFromFile("../images/sesame.png");
@@ -56,6 +59,7 @@ class plants{
             this->y = Y;
             this->x = X;
         }
+        virtual void shoot(std::vector<bullet*>& arr)=0;
 };
 
 class tomato: public plants{ 
@@ -68,6 +72,11 @@ class tomato: public plants{
             this->x = x;
             this->y = y;
         }
+        void shoot(std::vector<bullet*>& arr ){
+            bullet* curr = new TomatoBullet;
+            curr->setCoords(this->get_coords().x, this->get_coords().y);
+            arr.push_back(curr);
+        }
 };
 
 class banana: public plants{ 
@@ -79,6 +88,13 @@ class banana: public plants{
             herotexture.loadFromFile("../images/banana.png");//загружаем картинку
             this->x = x;
             this->y = y;
+        }
+        void shoot(std::vector<bullet*>& arr ){
+            bullet* curr1 = new BananaBullet(1);
+            curr1->setCoords(this->get_coords().x, this->get_coords().y);
+            bullet* curr2 = new BananaBullet(-1);
+            curr2->setCoords(this->get_coords().x, this->get_coords().y);
+            arr.push_back(curr1);arr.push_back(curr2);
         }
 };
 
