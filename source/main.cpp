@@ -8,6 +8,7 @@
 #include <thread>
 #include <random>
 #include <string>
+#include <list>
 
 std::mt19937 rnd2(std::chrono::steady_clock::now().time_since_epoch().count());
 
@@ -36,8 +37,10 @@ int main(int args, char** argv){
     myvector<plants*> field_plants;
     ///
 
+    
     ///
-    std::vector<bullet*> bullets;
+    //std::vector<bullet*> bullets;
+    std::list<bullet*> bullets;
     ///
 
     ///
@@ -72,10 +75,11 @@ int main(int args, char** argv){
         conv_plants.move(window,move_step);
 
         if (event.type == sf::Event::MouseButtonPressed){
-            int MouseX = (int)MyMouse.getPosition(window).x;
-            int MouseY = (int)MyMouse.getPosition(window).y;
+            auto MouseX = MyMouse.getPosition(window).x;
+            auto MouseY = MyMouse.getPosition(window).y;
 
-            check_circle.setPosition({MouseX, MouseY});
+            check_circle.setPosition({float(MouseX),float(MouseY)});
+
             window.draw(check_circle);
             conv_plants[last_chosen]->UnSelect();
             if(MouseX <= SQ_X){
@@ -103,18 +107,16 @@ int main(int args, char** argv){
             }
         }
 
-
-
         ///generate---spawn
         q++;
         if(q==expect){
             expect=rnd2()%(200/speed) + (100/speed);
             q=0;
             conv_plants.spawn(YYY,rnd2()%2+1);
-
         }
 
         //generate---bullets
+        
         q_bull++;
         if(q_bull == expect_bull){
             q_bull=0;
@@ -122,18 +124,23 @@ int main(int args, char** argv){
             for(int i = 0 ; i < field_plants.size();i++){
                 if(rnd2()%5 == 0){
                     field_plants[i]->shoot(bullets);
-                    std::cout << bullets.size() << '\n';
+                    //std::cout << bullets.size() << '\n';
                 }
             }        
         }
-        
-        for(int i = 0 ; i < bullets.size();i++){
-            bullets[i]->Move(speed);
-            bullets[i]->Draw(window);
-            
-            if(bullets[i]->get_coords().x > XXX || bullets[i]->get_coords().x > YYY){
-                delete bullets[i];
-                bullets.erase(bullets.begin() + i);
+    
+        auto it = bullets.begin();
+
+        while(it != bullets.end()){
+            //std::cout << (*it)->get_coords().x << ' ' << (*it)->get_coords().y << '\n';  
+            (*it)->Move(speed);
+            (*it)->Draw(window);
+
+            if( (*it)->get_coords().x > 2*XXX+SQ_X || (*it)->get_coords().x > 2*YYY+SQ_Y){
+                delete (*it);
+                it = bullets.erase(it);
+            } else {
+                ++it;
             }
         }
 

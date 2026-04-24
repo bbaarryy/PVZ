@@ -11,8 +11,10 @@ class bullet{
         float x,y;
         float szx, szy;
         int dir_diag;
+        bool visiable;
     public:
         bullet(){
+            visiable = 1;
             herotexture.loadFromFile("../images/sesame.png");
             shsprite.setTexture(herotexture);
             shsprite.setScale({0.13,0.13});
@@ -26,9 +28,9 @@ class bullet{
             //rectangle.setFillColor(sf::Color(250, 0, 50));
             //window.draw(rectangle);
             //
-
+            if(visiable){
             shsprite.setPosition({this->x, this->y });
-            window.draw(shsprite);
+            window.draw(shsprite);}
         }
         sf::Vector2f get_coords(){
             return( sf::Vector2f(this->x,this->y) );

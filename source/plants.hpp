@@ -4,6 +4,9 @@
 #include <iostream>
 #include <vector>
 #include "bullet.hpp"
+#include <list>
+
+typedef std::list<bullet*> shoot_massive_T;
 
 class plants{
     protected:
@@ -59,8 +62,9 @@ class plants{
             this->y = Y;
             this->x = X;
         }
-        virtual void shoot(std::vector<bullet*>& arr)=0;
+        virtual void shoot(shoot_massive_T& arr)=0;
 };
+
 
 class tomato: public plants{ 
     public:
@@ -72,7 +76,7 @@ class tomato: public plants{
             this->x = x;
             this->y = y;
         }
-        void shoot(std::vector<bullet*>& arr ){
+        void shoot(shoot_massive_T& arr ){
             bullet* curr = new TomatoBullet;
             curr->setCoords(this->get_coords().x, this->get_coords().y);
             arr.push_back(curr);
@@ -89,7 +93,7 @@ class banana: public plants{
             this->x = x;
             this->y = y;
         }
-        void shoot(std::vector<bullet*>& arr ){
+        void shoot(shoot_massive_T& arr ){
             bullet* curr1 = new BananaBullet(1);
             curr1->setCoords(this->get_coords().x, this->get_coords().y);
             bullet* curr2 = new BananaBullet(-1);
