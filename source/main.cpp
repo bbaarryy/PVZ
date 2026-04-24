@@ -73,6 +73,11 @@ int main(int args, char** argv){
         conv_plants.show(window);
         field_plants.show(window);
         conv_plants.move(window,move_step);
+        
+        // Update animations for field plants
+        for(int i = 0; i < field_plants.size(); i++){
+            field_plants[i]->updateAnimation();
+        }
 
         if (event.type == sf::Event::MouseButtonPressed){
             auto MouseX = MyMouse.getPosition(window).x;
@@ -97,7 +102,7 @@ int main(int args, char** argv){
                     plants* curr = conv_plants[chosen_index];
                     if(field_used[MouseX / SQ_X][MouseY / SQ_Y] == 0){
                         field_used[MouseX / SQ_X][MouseY / SQ_Y] = 1;
-                        curr->setCoords((MouseX / SQ_X ) * SQ_X + 10, (MouseY / SQ_Y)  * SQ_Y);
+                        curr->setCoordsAnimated((MouseX / SQ_X ) * SQ_X + 10, (MouseY / SQ_Y)  * SQ_Y);
                         field_plants.push_back(conv_plants[chosen_index]);
                         conv_plants.erase(conv_plants.begin() + chosen_index);
                     }
