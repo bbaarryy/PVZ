@@ -19,7 +19,6 @@ int main(int args, char** argv){
     speed = std::stoi(argv[1]);
     int move_step = speed;
 
-
     unsigned int XXX,YYY,NX,NY;
     XXX=700;YYY=600;NX=8;NY=8;
     int SQ_X = XXX/(NX+1);
@@ -68,6 +67,7 @@ int main(int args, char** argv){
             if (event.type == sf::Event::Closed)
                 window.close();
         }
+
         window.clear();
         FIELD.draw(window);
         conv_plants.show(window);
@@ -125,7 +125,7 @@ int main(int args, char** argv){
         q_bull++;
         if(q_bull == expect_bull){
             q_bull=0;
-            int expect_bull=rnd2()%(50/speed) + (30/speed);
+            expect_bull=rnd2()%(50/speed) + (30/speed);
             for(int i = 0 ; i < field_plants.size();i++){
                 if(rnd2()%5 == 0){
                     field_plants[i]->shoot(bullets);

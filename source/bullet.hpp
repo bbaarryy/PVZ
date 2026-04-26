@@ -3,6 +3,15 @@
 #include <SFML/Audio.hpp>
 #include <iostream>
 
+#include <chrono>
+#include <ctime>
+#include <thread>
+#include <random>
+#include <string>
+#include <list>
+
+std::mt19937 rnd2(std::chrono::steady_clock::now().time_since_epoch().count());
+
 class bullet{
     protected:
         sf::Texture herotexture;
@@ -15,9 +24,10 @@ class bullet{
     public:
         bullet(){
             visiable = 1;
-            herotexture.loadFromFile("../images/sesame.png");
+            herotexture.loadFromFile("../images/sunflower-seed.png");
             shsprite.setTexture(herotexture);
             shsprite.setScale({0.13,0.13});
+            shsprite.setRotation(float(rnd2() % 360));
             this->szx = shsprite.getScale().x * herotexture.getSize().x;
             this->szy = shsprite.getScale().y * herotexture.getSize().y;
         }

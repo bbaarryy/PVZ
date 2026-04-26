@@ -15,8 +15,10 @@ class plants{
         sf::Sprite shsprite;
         sf::RectangleShape rectangle;
         float x,y;
+        float dx,dy;
         float szx, szy;
         bool chosen;
+
         // Effect variables
         float shootEffectTimer; // 0 = no effect, >0 = effect active
         float baseScaleX, baseScaleY;
@@ -37,12 +39,13 @@ class plants{
             baseScaleX = 0.13f;
             baseScaleY = 0.13f;
             isAnimating = false;
+            dx=0;dy=0;
             targetX = 0;
             targetY = 0;
             animSpeed = 50.0f; // pixels per frame
         }
         void Draw(sf::RenderWindow& window) {
-            rectangle.setPosition(this->x,this->y);
+            rectangle.setPosition(this->x+dx,this->y+dy);
             rectangle.setSize({this->szx, this->szy});
             rectangle.setFillColor(sf::Color(250, 0, 50));
             //DEBUG
@@ -58,13 +61,14 @@ class plants{
                 float progress = shootEffectTimer / 10.0f; // 10 frames duration
                 float compression = sin(progress * 3.14159f); // smooth sine wave
                 
-                currentScaleX = baseScaleX * (1.0f - 0.15f * compression); // shrink to 85%
-                currentScaleY = baseScaleY * (1.0f + 0.1f * compression);  // grow to 110%
-                
+                currentScaleY = baseScaleY * (1.0f - 0.3f * compression);  //shrink to 70%
+                this->dy = (0.3f*compression)*(this->szy);
+
                 shootEffectTimer -= 1.0f; // decrease timer
             }
+            else{dy=0;}
             
-            shsprite.setScale({currentScaleX, currentScaleY});
+            shsprite.setScale({0.13f, currentScaleY});
             
             if(this->chosen){
                 shsprite.setColor(sf::Color(255, 255, 255, 128));
@@ -72,9 +76,10 @@ class plants{
             else{
                 shsprite.setColor(sf::Color(255, 255, 255, 255));
             }
-            shsprite.setPosition({this->x, this->y });
+            shsprite.setPosition({this->x + dx, this->y + dy});
             window.draw(shsprite);
         }
+        
         // Update animation - call this every frame
         void updateAnimation() {
             if (isAnimating) {
@@ -94,6 +99,7 @@ class plants{
                 }
             }
         }
+
         bool isMoving() const {
             return isAnimating;
         }

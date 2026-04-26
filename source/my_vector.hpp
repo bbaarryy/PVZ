@@ -23,7 +23,8 @@ public:
     void spawn(int YYY,int type){
         plants* tom_p;
         if(type == 1){
-        tom_p = new tomato(0.13,5,YYY);}
+            tom_p = new tomato(0.13,5,YYY);
+        }
         if(type == 2){
             tom_p = new banana(0.13,5,YYY);
         }
