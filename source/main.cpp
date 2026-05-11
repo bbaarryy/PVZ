@@ -35,6 +35,8 @@ int main(int args, char** argv){
     
     sf::RenderWindow window(sf::VideoMode({XXX, YYY}), "PVZ");
     main_field FIELD(8,8,sf::Color(250,250,250),sf::Color(0,0,0));
+
+    //это мигание экрана красным 
     sf::RectangleShape red_velvet;
     red_velvet.setPosition({0,0});
     red_velvet.setSize({XXX,YYY});
@@ -78,6 +80,7 @@ int main(int args, char** argv){
     int expect_bull=rnd2()%(50/speed) + (30/speed);
 
     sf::Mouse MyMouse;
+
     sf::CircleShape check_circle;
     check_circle.setRadius(15);
     check_circle.setOutlineColor(sf::Color::Red);
@@ -91,11 +94,13 @@ int main(int args, char** argv){
             if (event.type == sf::Event::Closed)
                 window.close();
         }
+
+
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Escape)){
             std::cout << "NOO" << '\n';
             break;
-            
         }
+
         window.clear();
         FIELD.draw(window);
         conv_plants.show(window);
@@ -114,7 +119,7 @@ int main(int args, char** argv){
 
             check_circle.setPosition({float(MouseX),float(MouseY)});
 
-            window.draw(check_circle);
+            //window.draw(check_circle);
             conv_plants[last_chosen]->UnSelect();
             if(MouseX <= SQ_X){
                 for(int i = 0 ; i < conv_plants.size();i++){
