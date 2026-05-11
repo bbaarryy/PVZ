@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -148,7 +149,7 @@ class tomato: public plants{
         void shoot(shoot_massive_T& arr ){
             triggerShootEffect();
             bullet* curr = new TomatoBullet;
-            curr->setCoords(this->get_coords().x, this->get_coords().y);
+            curr->setCoords(this->get_coords().x + this->szx, this->get_coords().y + 30);
             arr.push_back(curr);
         }
 };
@@ -166,9 +167,9 @@ class banana: public plants{
         void shoot(shoot_massive_T& arr ){
             triggerShootEffect();
             bullet* curr1 = new BananaBullet(1);
-            curr1->setCoords(this->get_coords().x, this->get_coords().y);
+            curr1->setCoords(this->get_coords().x+ this->szx-10, this->get_coords().y );
             bullet* curr2 = new BananaBullet(-1);
-            curr2->setCoords(this->get_coords().x, this->get_coords().y);
+            curr2->setCoords(this->get_coords().x+ this->szx-10, this->get_coords().y);
             arr.push_back(curr1);arr.push_back(curr2);
         }
 };

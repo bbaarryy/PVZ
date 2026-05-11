@@ -4,7 +4,7 @@
 using std::vector;
 
 template <typename T>
-class myvector : public vector<T> {
+class plant_vector : public vector<T> {
 public:
     void show(sf::RenderWindow& win){
         for(int j = 0 ; j < (*this).size();j++){
