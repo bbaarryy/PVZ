@@ -214,7 +214,16 @@ int main(int args, char** argv){
                     burst_l.push_back(bb);
                 }
             }
+
             //if eat
+            auto it = field_plants.begin();
+            for(;it!=field_plants.end();it++){
+                if(((*it_z)->boundingBox).intersects((*it)->boundingBox) && (*it)->isMortal()){
+                    (*it)->hit();
+
+
+                }
+            }
             
             if((*it_z)->get_coords().x < SQ_X){
                 delete *it_z;it_z = zombies_l.erase(it_z);

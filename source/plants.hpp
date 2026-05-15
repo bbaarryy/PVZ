@@ -15,10 +15,12 @@ class plants{
         sf::Texture herotexture;
         sf::Sprite shsprite;
         sf::RectangleShape rectangle;
+        
         float x,y;
         float dx,dy;
         float szx, szy;
         bool chosen;
+        int health;
 
         // Effect variables
         float shootEffectTimer; // 0 = no effect, >0 = effect active
@@ -29,6 +31,8 @@ class plants{
         float animSpeed;
 
     public:
+        int chill_time;
+        sf::FloatRect boundingBox;
         plants(){
             herotexture.loadFromFile("../images/sesame.png");
             shsprite.setTexture(herotexture);
@@ -49,6 +53,8 @@ class plants{
             rectangle.setPosition(this->x+dx,this->y+dy);
             rectangle.setSize({this->szx, this->szy});
             rectangle.setFillColor(sf::Color(250, 0, 50));
+
+            boundingBox = shsprite.getGlobalBounds();
             //DEBUG
             //window.draw(rectangle);
             //
@@ -80,7 +86,19 @@ class plants{
             shsprite.setPosition({this->x + dx, this->y + dy});
             window.draw(shsprite);
         }
+
+        void hit(){
+            health--;
+        }
         
+        bool alive(){
+            return health>0;
+        }
+
+        bool isMortal(){
+            return chill_time > 0;
+        }
+
         // Update animation - call this every frame
         void updateAnimation() {
             if (isAnimating) {
@@ -139,9 +157,11 @@ class plants{
 class tomato: public plants{ 
     public:
         tomato(float sc){
+            health = 3;
             herotexture.loadFromFile("../images/tomato.png");//загружаем картинку
         }
         tomato(float sc,float x,float y){
+            health = 3;
             herotexture.loadFromFile("../images/tomato.png");//загружаем картинку
             this->x = x;
             this->y = y;
@@ -157,9 +177,11 @@ class tomato: public plants{
 class banana: public plants{ 
     public:
         banana(float sc){
+            health = 1;
             herotexture.loadFromFile("../images/banana.png");//загружаем картинку
         }
         banana(float sc,float x,float y){
+            health = 1;
             herotexture.loadFromFile("../images/banana.png");//загружаем картинку
             this->x = x;
             this->y = y;
