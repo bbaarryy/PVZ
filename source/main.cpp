@@ -94,8 +94,8 @@ int main(int args, char** argv){
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Escape)){
             std::cout << "NOO" << '\n';
             break;
-            
         }
+
         window.clear();
         FIELD.draw(window);
         conv_plants.show(window);
@@ -119,7 +119,6 @@ int main(int args, char** argv){
             if(MouseX <= SQ_X){
                 for(int i = 0 ; i < conv_plants.size();i++){
                     if( ((conv_plants[i]->get_coords().y) < MouseY) && (MouseY < (conv_plants[i]->get_coords().y)+(conv_plants[i]->PlantGetSize().y))){
-                        
                         conv_plants[i]->Select();
                         last_chosen = i;
                         chosen_index = i;
@@ -129,13 +128,16 @@ int main(int args, char** argv){
             else{
                 if(chosen_index != -1){
                     plants* curr = conv_plants[chosen_index];
-                    if(field_used[MouseX / SQ_X][MouseY / SQ_Y] == 0){
+                    if(field_used.at(MouseX / SQ_X).at(MouseY / SQ_Y) == 0){
                         field_used[MouseX / SQ_X][MouseY / SQ_Y] = 1;
                         curr->setCoordsAnimated((MouseX / SQ_X ) * SQ_X + 10, (MouseY / SQ_Y)  * SQ_Y);
+                        
+                        //curr->setCoords((MouseX / SQ_X ) * SQ_X + 10, (MouseY / SQ_Y)  * SQ_Y);
+                        curr->UnSelect();
+
                         field_plants.push_back(conv_plants[chosen_index]);
                         conv_plants.erase(conv_plants.begin() + chosen_index);
                     }
-                    curr->UnSelect();
                     chosen_index = -1;
                 }
             }
@@ -198,8 +200,9 @@ int main(int args, char** argv){
         auto it_z = zombies_l.begin();
 
         while(it_z != zombies_l.end()){
-            (*it_z)->Move(speed);
+            
             (*it_z)->Draw(window);
+            bool is_move = 1;
 
             //if kill
             for(auto it : bullets){
@@ -216,15 +219,17 @@ int main(int args, char** argv){
             }
 
             //if eat
-            auto it = field_plants.begin();
-            for(;it!=field_plants.end();it++){
-                if(((*it_z)->boundingBox).intersects((*it)->boundingBox) && (*it)->isMortal()){
-                    (*it)->hit();
-
+            auto it_p = field_plants.begin();
+            for(;it_p!=field_plants.end();it_p++){
+                if(((*it_z)->boundingBox).intersects((*it_p)->boundingBox)){
+                    //(*it_p)->hit();
+                    is_move = 0;
 
                 }
             }
             
+            if(is_move){(*it_z)->Move(speed);}
+
             if((*it_z)->get_coords().x < SQ_X){
                 delete *it_z;it_z = zombies_l.erase(it_z);
                 invaded_zombies++;
