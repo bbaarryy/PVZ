@@ -30,8 +30,6 @@ class bullet: public Move_Obj{
         }
 };
 
-
-
 class TomatoBullet: public bullet{
     public:
         void Move(int speed) override{

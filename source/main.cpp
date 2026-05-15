@@ -95,8 +95,8 @@ int main(int args, char** argv){
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Escape)){
             std::cout << "NOO" << '\n';
             break;
-            
         }
+
         window.clear();
         FIELD.draw(window);
         conv_plants.show(window);
@@ -120,7 +120,6 @@ int main(int args, char** argv){
             if(MouseX <= SQ_X){
                 for(int i = 0 ; i < conv_plants.size();i++){
                     if( ((conv_plants[i]->get_coords().y) < MouseY) && (MouseY < (conv_plants[i]->get_coords().y)+(conv_plants[i]->PlantGetSize().y))){
-                        
                         conv_plants[i]->Select();
                         last_chosen = i;
                         chosen_index = i;
@@ -133,10 +132,13 @@ int main(int args, char** argv){
                     if(field_used.at(MouseX / SQ_X).at(MouseY / SQ_Y) == 0){
                         field_used[MouseX / SQ_X][MouseY / SQ_Y] = 1;
                         curr->setCoordsAnimated((MouseX / SQ_X ) * SQ_X + 10, (MouseY / SQ_Y)  * SQ_Y);
+                        
+                        //curr->setCoords((MouseX / SQ_X ) * SQ_X + 10, (MouseY / SQ_Y)  * SQ_Y);
+                        curr->UnSelect();
+
                         field_plants.push_back(conv_plants[chosen_index]);
                         conv_plants.erase(conv_plants.begin() + chosen_index);
                     }
-                    curr->UnSelect();
                     chosen_index = -1;
                 }
             }
@@ -201,6 +203,7 @@ int main(int args, char** argv){
         while(it_z != zombies_l.end()){
             bool is_move = 1;
             (*it_z)->Draw(window);
+            
 
             //if kill
             for(auto it : bullets){
