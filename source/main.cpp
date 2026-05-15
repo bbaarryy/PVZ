@@ -225,6 +225,9 @@ int main(int args, char** argv){
                     //killing this plant
                     bool is_killed = (*it_p)->harm((*(*it_z)));
                     if(is_killed){
+                        //std::cout << "KILLED!" << '\n';
+                        //std::cout << int((*it_p)->get_coords().x / SQ_X) << ' ' << int((*it_p)->get_coords().y / SQ_Y) << '\n';
+                        field_used[(*it_p)->get_coords().x / SQ_X][(*it_p)->get_coords().y / SQ_Y] = 0;
                         delete *it_p;it_p = field_plants.erase(it_p);
                     }
                     else{it_p++;}

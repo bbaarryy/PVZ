@@ -101,10 +101,6 @@ class plants{
             return health>0;
         }
 
-        bool isMortal(){
-            return chill_time > 0;
-        }
-
         // Update animation - call this every frame
         void updateAnimation() {
             if (isAnimating) {
