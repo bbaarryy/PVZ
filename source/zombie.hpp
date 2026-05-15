@@ -15,6 +15,7 @@
 class zombie: public Move_Obj{
     public:
         int health;int score;
+        float damage;
         zombie(){
             health=3;
             visiable=1;
@@ -29,6 +30,7 @@ class PureZombie: public zombie{
             this->x -= speed*0.5;
         }
         PureZombie(){
+            damage = 0.1;
             visiable=1;
             herotexture.loadFromFile("../images/zombie2.png");
             this->health = 3;
