@@ -38,3 +38,32 @@ class PureZombie: public zombie{
         }
 };
 
+
+class FastZombie: public zombie{
+    public:
+        void Move(int speed) override{
+            this->x -= speed;
+        }
+        FastZombie(){
+            damage = 0.07;
+            visiable=1;
+            herotexture.loadFromFile("../images/zombie3.png");
+            this->health = 1;
+            this->score = 100;
+        }
+};
+
+class ArmZombie: public zombie{
+    public:
+        void Move(int speed) override{
+            this->x -= speed*0.2;
+        }
+        ArmZombie(){
+            damage = 0.1;
+            visiable=1;
+            herotexture.loadFromFile("../images/zombie5.png");
+            this->health = 5;
+            this->score = 100;
+        }
+};
+

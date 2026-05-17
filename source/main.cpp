@@ -158,7 +158,18 @@ int main(int args, char** argv){
             
             conv_plants.spawn(YYY,rnd2()%3+1);
             
-            PureZombie* z_p = new PureZombie;
+            zombie* z_p;
+
+            if(rnd2()%3 == 0){
+                z_p = new PureZombie;
+            }
+            else if (rnd2()%3 == 1){
+                z_p = new FastZombie;
+            }
+            else{
+                z_p = new ArmZombie;
+            }
+
             (*z_p).setCoords(XXX, (rnd2()%(NY-1) + 1) * SQ_Y);
             zombies_l.push_back(z_p);
         }
