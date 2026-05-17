@@ -102,6 +102,11 @@ int main(int args, char** argv){
         FIELD.display_score(window,score);
         conv_plants.show(window);
         field_plants.show(window);
+
+        if(score < 0){
+            break;
+        }
+
         conv_plants.move(window,move_step);
         
         //update animations for field plants
@@ -214,7 +219,7 @@ int main(int args, char** argv){
                     burst* bb = new burst();
                     auto curr_x = (it->boundingBox).left;
                     auto curr_y = (it->boundingBox).top;
-                    score += (*it_z)->score;
+                    
                     bb->setCoords(curr_x,curr_y);
                     burst_l.push_back(bb);
                 }
@@ -235,6 +240,7 @@ int main(int args, char** argv){
                         delete *it_p;it_p = field_plants.erase(it_p);
                     }
                     else{it_p++;}
+                    break;
                     //
                 }
                 else{it_p++;}
@@ -244,12 +250,12 @@ int main(int args, char** argv){
              
             if((*it_z)->get_coords().x < SQ_X){
                 delete *it_z;it_z = zombies_l.erase(it_z);
-                invaded_zombies++;
+                
                 score-=1000;
                 is_velvet=1;
             } 
 
-            if((*it_z)->health <= 0){score += (*it_z)->score;delete *it_z;it_z = zombies_l.erase(it_z);}
+            if((*it_z)->health <= 0){invaded_zombies++;score += (*it_z)->score;delete *it_z;it_z = zombies_l.erase(it_z);}
             else{it_z++;}
         }
 
@@ -265,6 +271,34 @@ int main(int args, char** argv){
         window.display();
         std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Pause for 50 milliseconds
     }
+
+    red_velvet.setFillColor({255,0,0,127});
+
+    while(window.isOpen()){
+        window.clear();
+        FIELD.draw(window);
+        FIELD.display_score(window,score);
+        conv_plants.show(window);
+        field_plants.show(window);
+
+        window.draw(red_velvet);
+
+        FIELD.draw_def(window,invaded_zombies);
+
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Enter)){
+            std::cout << "NOO" << '\n';
+            break;
+        }
+        window.display();
+        std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Pause for 50 milliseconds
+    }
+
     window.close();
 
     clean_containers(conv_plants);
