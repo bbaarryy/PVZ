@@ -99,6 +99,7 @@ int main(int args, char** argv){
 
         window.clear();
         FIELD.draw(window);
+        FIELD.display_score(window,score);
         conv_plants.show(window);
         field_plants.show(window);
         conv_plants.move(window,move_step);
@@ -129,7 +130,7 @@ int main(int args, char** argv){
             else{
                 if(chosen_index != -1){
                     plants* curr = conv_plants[chosen_index];
-                    if(field_used.at(MouseX / SQ_X).at(MouseY / SQ_Y) == 0){
+                    if(field_used.at(MouseX / SQ_X).at(MouseY / SQ_Y) == 0 && (MouseY / SQ_Y != 0)){
                         field_used[MouseX / SQ_X][MouseY / SQ_Y] = 1;
                         curr->setCoordsAnimated((MouseX / SQ_X ) * SQ_X + 10, (MouseY / SQ_Y)  * SQ_Y);
                         
@@ -153,7 +154,7 @@ int main(int args, char** argv){
             conv_plants.spawn(YYY,rnd2()%3+1);
             
             PureZombie* z_p = new PureZombie;
-            (*z_p).setCoords(XXX, rnd2()%NY * SQ_Y);
+            (*z_p).setCoords(XXX, (rnd2()%(NY-1) + 1) * SQ_Y);
             zombies_l.push_back(z_p);
         }
 
@@ -248,7 +249,7 @@ int main(int args, char** argv){
                 is_velvet=1;
             } 
 
-            if((*it_z)->health == 0){delete *it_z;it_z = zombies_l.erase(it_z);}
+            if((*it_z)->health <= 0){score += (*it_z)->score;delete *it_z;it_z = zombies_l.erase(it_z);}
             else{it_z++;}
         }
 
