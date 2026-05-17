@@ -63,7 +63,7 @@ void main_field::display_score(sf::RenderWindow& Win, int score){
 
     sf::Text text(string_score + std::to_string(score), font, 50); 
     
-    text.setPosition(stripe_w + 5,0);
+    text.setPosition((curr_x - text.getGlobalBounds().width)/2,0);
 
 
     Win.draw(text);
@@ -84,10 +84,10 @@ void main_field::draw_def(sf::RenderWindow& Win, int def){
     text.setPosition((curr_x-text.getGlobalBounds().width)/2,curr_y/3);
 
     sf::Text text2("You've killed " + std::to_string(def) + " zombies", font, 60); 
-    text2.setPosition((curr_x-text2.getGlobalBounds().width)/2,curr_y/3 + text.getGlobalBounds().height);
+    text2.setPosition((curr_x-text2.getGlobalBounds().width)/2,curr_y/3 + text.getGlobalBounds().height +5 );
 
     sf::Text text3("Predd enter", font, 30); 
-    text3.setPosition((curr_x-text3.getGlobalBounds().width)/2,curr_y/3 + text.getGlobalBounds().height + text2.getGlobalBounds().height );
+    text3.setPosition((curr_x-text3.getGlobalBounds().width)/2,curr_y/3 + text.getGlobalBounds().height + text2.getGlobalBounds().height +5);
     Win.draw(text);
     Win.draw(text2);
     Win.draw(text3);
