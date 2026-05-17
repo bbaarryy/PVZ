@@ -14,6 +14,7 @@
 #include <list>
 
 int chosen_index = -1;
+int killed_normal_zombies = 0;
 
 template <typename T>
 void clean_containers(T& a){
@@ -21,6 +22,10 @@ void clean_containers(T& a){
         delete it;
     }
     a.clear();
+}
+
+void upd_except(int& curr,int speed){
+    curr = rnd2()%(200/speed) + (300/speed);
 }
 
 int main(int args, char** argv){
@@ -34,8 +39,25 @@ int main(int args, char** argv){
     int SQ_Y = YYY/NY;
     
     sf::RenderWindow window(sf::VideoMode({XXX, YYY}), "PVZ");
-    main_field FIELD(8,8,sf::Color(250,250,250),sf::Color(0,0,0));
 
+    sf::RectangleShape scoreBoard;
+    scoreBoard.setSize({180, 40});
+    scoreBoard.setFillColor(sf::Color(255, 0, 0, 255));  // ЯРКО-КРАСНЫЙ, НЕПРОЗРАЧНЫЙ
+    scoreBoard.setPosition(10, 10);
+    scoreBoard.setOutlineThickness(2);
+    scoreBoard.setOutlineColor(sf::Color::White);
+
+    sf::Font font;
+    font.loadFromFile("/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf");
+
+    sf::Text scoreText;
+    scoreText.setFont(font);
+    scoreText.setString("Score: 1000");
+    scoreText.setCharacterSize(24);
+    scoreText.setFillColor(sf::Color::White);
+    scoreText.setPosition(15, 12);
+        
+    main_field FIELD(8,8,sf::Color(250,250,250),sf::Color(0,0,0));
     //это мигание экрана красным 
     sf::RectangleShape red_velvet;
     red_velvet.setPosition({0,0});
@@ -74,18 +96,13 @@ int main(int args, char** argv){
     ///
 
     int q=0;
-    int expect=rnd2()%(200/speed) + (100/speed);
+    int expect=rnd2()%(200/speed) + (300/speed); // plant generation
+    upd_except(expect,speed);
 
     int q_bull=0;
-    int expect_bull=rnd2()%(50/speed) + (30/speed);
+    int expect_bull=rnd2()%(50/speed) + (30/speed);// bullet generation
 
     sf::Mouse MyMouse;
-
-    sf::CircleShape check_circle;
-    check_circle.setRadius(15);
-    check_circle.setOutlineColor(sf::Color::Red);
-    check_circle.setOutlineThickness(5);
-    check_circle.setPosition({10, 20});
 
     while (window.isOpen()){
         sf::Event event;
@@ -95,21 +112,25 @@ int main(int args, char** argv){
                 window.close();
         }
 
-
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Escape)){
             std::cout << "NOO" << '\n';
             break;
         }
 
         window.clear();
+
+        
         FIELD.draw(window);
         conv_plants.show(window);
         field_plants.show(window);
         conv_plants.move(window,move_step);
         
+        window.draw(scoreBoard);
+        scoreText.setString("Score: " + std::to_string(score));
+        window.draw(scoreText);
         //update animations for field plants
         for(int i = 0; i < field_plants.size(); i++){
-            field_plants[i]->updateAnimation();
+            field_plants[i]->updateAnimation(); // speed of the жмыхи
         }
 
         //seed plants on field
@@ -117,10 +138,8 @@ int main(int args, char** argv){
             auto MouseX = MyMouse.getPosition(window).x;
             auto MouseY = MyMouse.getPosition(window).y;
 
-            check_circle.setPosition({float(MouseX),float(MouseY)});
-
-            //window.draw(check_circle);
             conv_plants[last_chosen]->UnSelect();
+
             if(MouseX <= SQ_X){
                 for(int i = 0 ; i < conv_plants.size();i++){
                     if( ((conv_plants[i]->get_coords().y) < MouseY) && (MouseY < (conv_plants[i]->get_coords().y)+(conv_plants[i]->PlantGetSize().y))){
@@ -149,14 +168,30 @@ int main(int args, char** argv){
         ///generate---spawn
         q++;
         if(q==expect){
-            expect=rnd2()%(200/speed) + (100/speed);
+            upd_except(expect,speed);
             q=0;
             
             conv_plants.spawn(YYY,rnd2()%2+1);
             
-            PureZombie* z_p = new PureZombie;
-            (*z_p).setCoords(XXX, rnd2()%NY * SQ_Y);
-            zombies_l.push_back(z_p);
+            // PureZombie* z_p = new PureZombie;
+            // (*z_p).setCoords(XXX, rnd2()%NY * SQ_Y);
+            // zombies_l.push_back(z_p);
+            // Логика спавна: сначала 4 обычных зомби, потом рандом
+            zombie* new_zombie;
+
+            if (killed_normal_zombies < 3) {
+                new_zombie = new PureZombie;
+            } else {
+                // После 4 убитых - рандом: 50% обычный, 50% сильный
+                if(rnd2() % 100 < 50) {
+                    new_zombie = new StrongZombie;
+                } else {
+                    new_zombie = new PureZombie;
+                }
+            }
+
+            new_zombie->setCoords(XXX, rnd2() % NY * SQ_Y);
+            zombies_l.push_back(new_zombie);
         }
 
         //generate---bullets
@@ -185,11 +220,11 @@ int main(int args, char** argv){
             }
         }
 
+        //burstes
         auto itb = burst_l.begin();
-        while(itb != burst_l.end()){
-            (*itb)->Draw(window);
-            (*itb)->lifetime -=10;
-            //(*itb)->Move(speed);
+        while(itb!=burst_l.end()){
+        (*itb)->Draw(window);
+            (*itb)->lifetime-=10;
 
             if( (*itb)->lifetime <= 0){
                 delete (*itb);
@@ -210,27 +245,42 @@ int main(int args, char** argv){
             for(auto it : bullets){
                 if(((*it_z)->boundingBox).intersects(it->boundingBox)){
                     it->visiable = 0;
-                    (*it_z)->health--;
+                    (*it_z)->takeDamage(1);
+
                     burst* bb = new burst();
                     auto curr_x = (it->boundingBox).left;
                     auto curr_y = (it->boundingBox).top;
-                    score += (*it_z)->score;
+                    
                     bb->setCoords(curr_x,curr_y);
                     burst_l.push_back(bb);
                 }
             }
             //if eat
+            //
+            //
+            //
             
             if((*it_z)->get_coords().x < SQ_X){
                 delete *it_z;it_z = zombies_l.erase(it_z);
                 invaded_zombies++;
                 score-=1000;
                 is_velvet=1;
+                continue;
 
             } 
 
-            if((*it_z)->health == 0){delete *it_z;it_z = zombies_l.erase(it_z);}
-            else{it_z++;}
+            // Проверка, умер ли зомби
+            if((*it_z)->isDead()){
+                if((*it_z)->isNormal()) {
+                    killed_normal_zombies++;
+                }
+                score += (*it_z)->getScore();
+                delete *it_z;
+                it_z = zombies_l.erase(it_z);
+            } 
+            else {
+                ++it_z;
+            }
         }
 
         if(is_velvet)
@@ -252,5 +302,4 @@ int main(int args, char** argv){
     clean_containers(zombies_l);
     clean_containers(bullets);
     clean_containers(burst_l);
-
 }

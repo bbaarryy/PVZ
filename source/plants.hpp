@@ -166,11 +166,13 @@ class banana: public plants{
         }
         void shoot(shoot_massive_T& arr ){
             triggerShootEffect();
-            bullet* curr1 = new BananaBullet(1);
-            curr1->setCoords(this->get_coords().x+ this->szx-10, this->get_coords().y );
-            bullet* curr2 = new BananaBullet(-1);
-            curr2->setCoords(this->get_coords().x+ this->szx-10, this->get_coords().y);
-            arr.push_back(curr1);arr.push_back(curr2);
+             bullet* curr1 = new BananaBullet(1, 2);  // 2 = тип семечек банана
+            curr1->setCoords(this->get_coords().x + this->szx - 10, this->get_coords().y);
+            
+            bullet* curr2 = new BananaBullet(-1, 2);
+            curr2->setCoords(this->get_coords().x + this->szx - 10, this->get_coords().y);
+            arr.push_back(curr1);
+            arr.push_back(curr2);
         }
 };
 

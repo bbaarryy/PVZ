@@ -14,13 +14,36 @@
 
 class zombie: public Move_Obj{
     public:
-        int health;int score;
+        int health;
+        int score;
+        
         zombie(){
             health=3;
+            score=100;
             visiable=1;
             herotexture.loadFromFile("../images/zombie2.png");
             setup_pic();
         }
+        
+        virtual ~zombie() {}
+        
+        virtual void takeDamage(int damage) {
+            health -= damage;
+        }
+        
+        virtual bool isDead() const {
+            return health <= 0;
+        }
+        
+        virtual bool isNormal() const {
+            return true;
+        }
+        
+        virtual int getScore() const {
+            return score;
+        }
+        
+        virtual void Move(int speed) override = 0;
 };
 
 class PureZombie: public zombie{
@@ -28,6 +51,7 @@ class PureZombie: public zombie{
         void Move(int speed) override{
             this->x -= speed*0.5;
         }
+        
         PureZombie(){
             visiable=1;
             herotexture.loadFromFile("../images/zombie2.png");
@@ -36,3 +60,20 @@ class PureZombie: public zombie{
         }
 };
 
+class StrongZombie: public zombie{
+    public:
+        void Move(int speed) override{
+            this->x -= speed*0.7;
+        }
+        
+        StrongZombie(){
+            visiable=1;
+            herotexture.loadFromFile("../images/chasing.png");
+            this->health = 6;
+            this->score = 200;
+        }
+        
+        bool isNormal() const override {
+            return false;
+        }
+};

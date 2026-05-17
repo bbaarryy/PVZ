@@ -30,8 +30,6 @@ class bullet: public Move_Obj{
         }
 };
 
-
-
 class TomatoBullet: public bullet{
     public:
         void Move(int speed) override{
@@ -48,7 +46,22 @@ class BananaBullet: public bullet{
             this->x += speed;
             this->y += dir_diag*speed;
         }
+        
+        // Старый конструктор (для совместимости)
         BananaBullet(int dd){
             dir_diag = dd;
+            herotexture.loadFromFile("../images/sunflower-seed.png");
+            setup_pic();
+        }
+        
+        // НОВЫЙ КОНСТРУКТОР для банановых семечек
+        BananaBullet(int dd, int seedType){
+            dir_diag = dd;
+            if (seedType == 2) {
+                herotexture.loadFromFile("../images/banana-seed.png");
+            } else {
+                herotexture.loadFromFile("../images/sunflower-seed.png");
+            }
+            setup_pic();
         }
 };
