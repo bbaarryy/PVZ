@@ -204,7 +204,7 @@ class banana: public plants{
         }
         void shoot(shoot_massive_T& arr ){
             triggerShootEffect();
-             bullet* curr1 = new BananaBullet(1, 2);  // 2 = тип семечек банана
+            bullet* curr1 = new BananaBullet(1, 2);  // 2 = тип семечек банана
             curr1->setCoords(this->get_coords().x + this->szx - 10, this->get_coords().y);
             
             bullet* curr2 = new BananaBullet(-1, 2);
@@ -232,3 +232,7 @@ class orange: public plants{
             return;
         }
 };
+
+// class pea: public plants{
+
+// }
