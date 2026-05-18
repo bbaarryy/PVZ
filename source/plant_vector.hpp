@@ -31,6 +31,9 @@ public:
         if(type == 3){
             tom_p = new orange(0.13,5,YYY);
         }
+        if(type == 4){
+            tom_p = new pea(0.13,5,YYY);
+        }
         (*this).push_back(tom_p);
     }
 };

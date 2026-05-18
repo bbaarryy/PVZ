@@ -233,6 +233,29 @@ class orange: public plants{
         }
 };
 
-// class pea: public plants{
-
-// }
+class pea: public plants{
+    public:
+        pea(float sc){
+            health = 5;
+            max_health = health;
+            herotexture.loadFromFile("../images/peas.png");//загружаем картинку
+        }
+        pea(float sc,float x,float y){
+            health = 5;
+            max_health = health;
+            herotexture.loadFromFile("../images/peas.png");//загружаем картинку
+            this->x = x;
+            this->y = y;
+        }
+        void shoot(shoot_massive_T& arr ){
+            triggerShootEffect();
+            bullet* curr1 = new pea_bullet(1);  // 2 = тип семечек банана
+            curr1->setCoords(this->get_coords().x + this->szx, this->get_coords().y + 10);
+            
+            bullet* curr2 = new pea_bullet(-1);
+            curr2->setCoords(this->get_coords().x - this->szx, this->get_coords().y + 10);
+            arr.push_back(curr1);
+            arr.push_back(curr2);
+            return;
+        }
+};

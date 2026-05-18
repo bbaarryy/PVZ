@@ -77,7 +77,7 @@ void main_field::draw_def(sf::RenderWindow& Win, int def){
     float stripe_w = (float)curr_x /(ld)(this->nx+1);
 
     sf::Font font;
-    font.loadFromFile("/usr/share/fonts/truetype/lyx/eufm10.ttf");
+    font.loadFromFile("../eufm10.ttf");
 
     sf::Text text("Game Over", font, 100); 
     

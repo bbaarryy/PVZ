@@ -181,7 +181,7 @@ int main(int args, char** argv){
             upd_except(expect,speed);
             q=0;
             
-            conv_plants.spawn(YYY,rnd2()%3+1);
+            conv_plants.spawn(YYY,rnd2()%4+1);
             
             // PureZombie* z_p = new PureZombie;
             // (*z_p).setCoords(XXX, rnd2()%NY * SQ_Y);
