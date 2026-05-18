@@ -11,4 +11,6 @@ class main_field{
     public:
         main_field(int NX, int NY, Color major, Color minor): nx(NX), ny(NY), major_c(major), minor_c(minor) {};
         void draw(sf::RenderWindow& window);
+        void display_score(sf::RenderWindow& window,int score);
+        void draw_def(sf::RenderWindow& window,int def);
 };

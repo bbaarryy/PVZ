@@ -6,6 +6,7 @@
 #include <vector>
 #include <cmath>
 #include "bullet.hpp"
+#include "zombie.hpp"
 #include <list>
 
 typedef std::list<bullet*> shoot_massive_T;
@@ -15,10 +16,13 @@ class plants{
         sf::Texture herotexture;
         sf::Sprite shsprite;
         sf::RectangleShape rectangle;
+        
         float x,y;
         float dx,dy;
         float szx, szy;
         bool chosen;
+        float health;
+        float max_health;
 
         // Effect variables
         float shootEffectTimer; // 0 = no effect, >0 = effect active
@@ -29,6 +33,8 @@ class plants{
         float animSpeed;
 
     public:
+        int chill_time;
+        sf::FloatRect boundingBox;
         plants(){
             herotexture.loadFromFile("../images/sesame.png");
             shsprite.setTexture(herotexture);
@@ -49,6 +55,8 @@ class plants{
             rectangle.setPosition(this->x+dx,this->y+dy);
             rectangle.setSize({this->szx, this->szy});
             rectangle.setFillColor(sf::Color(250, 0, 50));
+
+            boundingBox = shsprite.getGlobalBounds();
             //DEBUG
             //window.draw(rectangle);
             //
@@ -57,6 +65,8 @@ class plants{
             float currentScaleX = baseScaleX;
             float currentScaleY = baseScaleY;
             
+            
+
             if (shootEffectTimer > 0) {
                 // Compression effect: squeeze horizontally, stretch vertically
                 float progress = shootEffectTimer / 10.0f; // 10 frames duration
@@ -71,16 +81,26 @@ class plants{
             
             shsprite.setScale({0.13f, currentScaleY});
             
+
             if(this->chosen){
                 shsprite.setColor(sf::Color(255, 255, 255, 128));
             }
             else{
                 shsprite.setColor(sf::Color(255, 255, 255, 255));
+                shsprite.setColor({255,255,255,sf::Uint8(255*(this->health/this->max_health))});
             }
             shsprite.setPosition({this->x + dx, this->y + dy});
             window.draw(shsprite);
         }
+
+        void hit(){
+            health--;
+        }
         
+        bool alive(){
+            return health>0;
+        }
+
         // Update animation - call this every frame
         void updateAnimation() {
             if (isAnimating) {
@@ -119,6 +139,11 @@ class plants{
             this->y += dy;
             this->x += dx;
         }
+        bool harm(zombie& Z){
+            this->health -= Z.damage;
+            if(this->health <= 0){return 1;}
+            return 0;
+        }
         sf::Vector2f PlantGetSize(){
             return( sf::Vector2f(this->szx,this->szy) );
         }
@@ -139,9 +164,13 @@ class plants{
 class tomato: public plants{ 
     public:
         tomato(float sc){
+            health = 3;
+            max_health = health;
             herotexture.loadFromFile("../images/tomato.png");//загружаем картинку
         }
         tomato(float sc,float x,float y){
+            health = 3;
+            max_health = health;
             herotexture.loadFromFile("../images/tomato.png");//загружаем картинку
             this->x = x;
             this->y = y;
@@ -157,9 +186,13 @@ class tomato: public plants{
 class banana: public plants{ 
     public:
         banana(float sc){
+            health = 1;
+            max_health = health;
             herotexture.loadFromFile("../images/banana.png");//загружаем картинку
         }
         banana(float sc,float x,float y){
+            health = 1;
+            max_health = health;
             herotexture.loadFromFile("../images/banana.png");//загружаем картинку
             this->x = x;
             this->y = y;
@@ -176,3 +209,21 @@ class banana: public plants{
         }
 };
 
+class orange: public plants{
+    public:
+        orange(float sc){
+            health = 30;
+            max_health = health;
+            herotexture.loadFromFile("../images/orange.png");//загружаем картинку
+        }
+        orange(float sc,float x,float y){
+            health = 30;
+            max_health = health;
+            herotexture.loadFromFile("../images/orange.png");//загружаем картинку
+            this->x = x;
+            this->y = y;
+        }
+        void shoot(shoot_massive_T& arr ){
+            return;
+        }
+};

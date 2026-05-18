@@ -33,7 +33,8 @@ int main(int args, char** argv){
     speed = std::stoi(argv[1]);
     int move_step = speed;
 
-    int XXX,YYY,NX,NY;
+    unsigned int XXX, YYY;
+    int NX,NY;
     XXX=700;YYY=600;NX=8;NY=8;
     int SQ_X = XXX/(NX+1);
     int SQ_Y = YYY/NY;
@@ -61,7 +62,7 @@ int main(int args, char** argv){
     //это мигание экрана красным 
     sf::RectangleShape red_velvet;
     red_velvet.setPosition({0,0});
-    red_velvet.setSize({XXX,YYY});
+    red_velvet.setSize({float(XXX), float(YYY)});
     sf::Color velvet_color = {255,0,0,100};
     red_velvet.setFillColor(velvet_color);
     sf::Uint8 velvet_transparent = 100;
@@ -87,7 +88,7 @@ int main(int args, char** argv){
     ///
 
     ///
-    std::vector<vector<bool>> field_used(NX,vector<bool> (NY,0));
+    std::vector<vector<bool>> field_used(NX+1,vector<bool> (NY,0));
     int last_chosen = 0;
     ///
     
@@ -117,12 +118,19 @@ int main(int args, char** argv){
             break;
         }
 
+
         window.clear();
 
         
         FIELD.draw(window);
+        FIELD.display_score(window,score);
         conv_plants.show(window);
         field_plants.show(window);
+
+        if(score < 0){
+            break;
+        }
+
         conv_plants.move(window,move_step);
         
         window.draw(scoreBoard);
@@ -143,7 +151,6 @@ int main(int args, char** argv){
             if(MouseX <= SQ_X){
                 for(int i = 0 ; i < conv_plants.size();i++){
                     if( ((conv_plants[i]->get_coords().y) < MouseY) && (MouseY < (conv_plants[i]->get_coords().y)+(conv_plants[i]->PlantGetSize().y))){
-                        
                         conv_plants[i]->Select();
                         last_chosen = i;
                         chosen_index = i;
@@ -153,13 +160,16 @@ int main(int args, char** argv){
             else{
                 if(chosen_index != -1){
                     plants* curr = conv_plants[chosen_index];
-                    if(field_used[MouseX / SQ_X][MouseY / SQ_Y] == 0){
+                    if(field_used.at(MouseX / SQ_X).at(MouseY / SQ_Y) == 0 && (MouseY / SQ_Y != 0)){
                         field_used[MouseX / SQ_X][MouseY / SQ_Y] = 1;
                         curr->setCoordsAnimated((MouseX / SQ_X ) * SQ_X + 10, (MouseY / SQ_Y)  * SQ_Y);
+                        
+                        //curr->setCoords((MouseX / SQ_X ) * SQ_X + 10, (MouseY / SQ_Y)  * SQ_Y);
+                        curr->UnSelect();
+
                         field_plants.push_back(conv_plants[chosen_index]);
                         conv_plants.erase(conv_plants.begin() + chosen_index);
                     }
-                    curr->UnSelect();
                     chosen_index = -1;
                 }
             }
@@ -238,8 +248,9 @@ int main(int args, char** argv){
         auto it_z = zombies_l.begin();
 
         while(it_z != zombies_l.end()){
-            (*it_z)->Move(speed);
+            bool is_move = 1;
             (*it_z)->Draw(window);
+            
 
             //if kill
             for(auto it : bullets){
@@ -255,14 +266,33 @@ int main(int args, char** argv){
                     burst_l.push_back(bb);
                 }
             }
+
             //if eat
-            //
-            //
-            //
+            auto it_p = field_plants.begin();
+            while(it_p!=field_plants.end()){
+                if(((*it_z)->boundingBox).intersects((*it_p)->boundingBox)){
+                    is_move = 0;
+
+                    //killing this plant
+                    bool is_killed = (*it_p)->harm((*(*it_z)));
+                    if(is_killed){
+                        //std::cout << "KILLED!" << '\n';
+                        //std::cout << int((*it_p)->get_coords().x / SQ_X) << ' ' << int((*it_p)->get_coords().y / SQ_Y) << '\n';
+                        field_used[(*it_p)->get_coords().x / SQ_X][(*it_p)->get_coords().y / SQ_Y] = 0;
+                        delete *it_p;it_p = field_plants.erase(it_p);
+                    }
+                    else{it_p++;}
+                    break;
+                    //
+                }
+                else{it_p++;}
+            }
             
+            if(is_move)(*it_z)->Move(speed);
+             
             if((*it_z)->get_coords().x < SQ_X){
                 delete *it_z;it_z = zombies_l.erase(it_z);
-                invaded_zombies++;
+                
                 score-=1000;
                 is_velvet=1;
                 continue;
@@ -295,6 +325,34 @@ int main(int args, char** argv){
         window.display();
         std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Pause for 50 milliseconds
     }
+
+    red_velvet.setFillColor({255,0,0,127});
+
+    while(window.isOpen()){
+        window.clear();
+        FIELD.draw(window);
+        FIELD.display_score(window,score);
+        conv_plants.show(window);
+        field_plants.show(window);
+
+        window.draw(red_velvet);
+
+        FIELD.draw_def(window,invaded_zombies);
+
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Enter)){
+            std::cout << "NOO" << '\n';
+            break;
+        }
+        window.display();
+        std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Pause for 50 milliseconds
+    }
+
     window.close();
 
     clean_containers(conv_plants);

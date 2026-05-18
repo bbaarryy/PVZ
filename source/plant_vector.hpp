@@ -28,6 +28,9 @@ public:
         if(type == 2){
             tom_p = new banana(0.13,5,YYY);
         }
+        if(type == 3){
+            tom_p = new orange(0.13,5,YYY);
+        }
         (*this).push_back(tom_p);
     }
 };
