@@ -133,9 +133,9 @@ int main(int args, char** argv){
 
         conv_plants.move(window,move_step);
         
-        window.draw(scoreBoard);
+        //window.draw(scoreBoard);
         scoreText.setString("Score: " + std::to_string(score));
-        window.draw(scoreText);
+        //window.draw(scoreText);
         //update animations for field plants
         for(int i = 0; i < field_plants.size(); i++){
             field_plants[i]->updateAnimation(); // speed of the жмыхи
@@ -181,7 +181,7 @@ int main(int args, char** argv){
             upd_except(expect,speed);
             q=0;
             
-            conv_plants.spawn(YYY,rnd2()%2+1);
+            conv_plants.spawn(YYY,rnd2()%3+1);
             
             // PureZombie* z_p = new PureZombie;
             // (*z_p).setCoords(XXX, rnd2()%NY * SQ_Y);
@@ -189,18 +189,26 @@ int main(int args, char** argv){
             // Логика спавна: сначала 4 обычных зомби, потом рандом
             zombie* new_zombie;
 
-            if (killed_normal_zombies < 3) {
-                new_zombie = new PureZombie;
-            } else {
-                // После 4 убитых - рандом: 50% обычный, 50% сильный
-                if(rnd2() % 100 < 50) {
+            
+            // После 2 убитых - рандом сильных
+            if(killed_normal_zombies == 2){
+                killed_normal_zombies = 0;
+                auto rr = rnd2() % 3;
+                if(rr == 0) {
                     new_zombie = new StrongZombie;
-                } else {
-                    new_zombie = new PureZombie;
+                } else if(rr == 1){
+                    new_zombie = new ArmZombie;
+                }
+                else{
+                    new_zombie = new FastZombie;
                 }
             }
+            else{
+                new_zombie = new PureZombie;
+            }
+            
 
-            new_zombie->setCoords(XXX, rnd2() % NY * SQ_Y);
+            new_zombie->setCoords(XXX, (rnd2() % (NY-1) + 1) * SQ_Y );
             zombies_l.push_back(new_zombie);
         }
 
@@ -210,7 +218,7 @@ int main(int args, char** argv){
             q_bull=0;
             expect_bull=rnd2()%(50/speed) + (30/speed);
             for(int i = 0 ; i < field_plants.size();i++){
-                if(rnd2()%5 == 0){
+                if(rnd2()%7 == 0){
                     field_plants[i]->shoot(bullets);
                 }
             }        
@@ -251,10 +259,9 @@ int main(int args, char** argv){
             bool is_move = 1;
             (*it_z)->Draw(window);
             
-
             //if kill
             for(auto it : bullets){
-                if(((*it_z)->boundingBox).intersects(it->boundingBox)){
+                if(((*it_z)->boundingBox).intersects(it->boundingBox) && (*it_z)->get_coords().x < XXX - SQ_X){
                     it->visiable = 0;
                     (*it_z)->takeDamage(1);
 
@@ -275,8 +282,11 @@ int main(int args, char** argv){
 
                     //killing this plant
                     bool is_killed = (*it_p)->harm((*(*it_z)));
+                    //std::cout << (*it_z)->damage << '\n';
+                    //std::cout << (*it_p)->get_health() << '\n';
                     if(is_killed){
-                        //std::cout << "KILLED!" << '\n';
+                        std::cout << "KILLED!" << '\n';
+                        std::cout << (*(*it_z)).damage << '\n';
                         //std::cout << int((*it_p)->get_coords().x / SQ_X) << ' ' << int((*it_p)->get_coords().y / SQ_Y) << '\n';
                         field_used[(*it_p)->get_coords().x / SQ_X][(*it_p)->get_coords().y / SQ_Y] = 0;
                         delete *it_p;it_p = field_plants.erase(it_p);
@@ -296,11 +306,12 @@ int main(int args, char** argv){
                 score-=1000;
                 is_velvet=1;
                 continue;
-
             } 
 
             // Проверка, умер ли зомби
             if((*it_z)->isDead()){
+                invaded_zombies++;
+
                 if((*it_z)->isNormal()) {
                     killed_normal_zombies++;
                 }

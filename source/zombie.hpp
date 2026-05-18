@@ -16,7 +16,7 @@ class zombie: public Move_Obj{
     public:
         int health;
         int score;
-        int damage;
+        float damage;
 
         zombie(){
             health=3;
@@ -58,6 +58,7 @@ class PureZombie: public zombie{
             herotexture.loadFromFile("../images/zombie2.png");
             this->health = 3;
             this->score = 100;
+            this->damage = 0.1;
         }
         bool isNormal() const override {
             return true;
@@ -75,6 +76,7 @@ class StrongZombie: public zombie{
             herotexture.loadFromFile("../images/chasing.png");
             this->health = 6;
             this->score = 200;
+            this->damage = 0.1;
         }
         
         bool isNormal() const override {
@@ -88,7 +90,7 @@ class FastZombie: public zombie{
             this->x -= speed;
         }
         FastZombie(){
-            damage = 0.07;
+            this->damage = 0.07;
             visiable=1;
             herotexture.loadFromFile("../images/zombie3.png");
             this->health = 1;

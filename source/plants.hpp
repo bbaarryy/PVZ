@@ -51,6 +51,11 @@ class plants{
             targetY = 0;
             animSpeed = 50.0f; // pixels per frame
         }
+
+        float get_health(){
+            return health;
+        }
+
         void Draw(sf::RenderWindow& window) {
             rectangle.setPosition(this->x+dx,this->y+dy);
             rectangle.setSize({this->szx, this->szy});
