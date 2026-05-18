@@ -46,7 +46,47 @@ class BananaBullet: public bullet{
             this->x += speed;
             this->y += dir_diag*speed;
         }
+        
+        // Старый конструктор (для совместимости)
         BananaBullet(int dd){
             dir_diag = dd;
+            herotexture.loadFromFile("../images/sunflower-seed.png");
+            setup_pic();
         }
+        
+        // НОВЫЙ КОНСТРУКТОР для банановых семечек
+        BananaBullet(int dd, int seedType){
+            dir_diag = dd;
+            if (seedType == 2) {
+                herotexture.loadFromFile("../images/banana-seed.png");
+            } else {
+                herotexture.loadFromFile("../images/sunflower-seed.png");
+            }
+            setup_pic();
+        }
+};
+
+class pea_bullet: public bullet{
+    public:
+        void Move(int speed) override{
+            this->x += speed * dir_diag;
+        }
+        
+        // Старый конструктор (для совместимости)
+        pea_bullet(int dd){
+            dir_diag = dd;
+            herotexture.loadFromFile("../images/pea_seed.png");
+            setup_pic();
+        }
+        
+        // НОВЫЙ КОНСТРУКТОР для банановых семечек
+        pea_bullet(int dd, int seedType){
+            dir_diag = dd;
+            if (seedType == 2) {
+                herotexture.loadFromFile("../images/banana-seed.png");
+            } else {
+                herotexture.loadFromFile("../images/sunflower-seed.png");
+            }
+            setup_pic();
+        }   
 };

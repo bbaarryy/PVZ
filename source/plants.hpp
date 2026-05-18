@@ -51,6 +51,11 @@ class plants{
             targetY = 0;
             animSpeed = 50.0f; // pixels per frame
         }
+
+        float get_health(){
+            return health;
+        }
+
         void Draw(sf::RenderWindow& window) {
             rectangle.setPosition(this->x+dx,this->y+dy);
             rectangle.setSize({this->szx, this->szy});
@@ -199,11 +204,13 @@ class banana: public plants{
         }
         void shoot(shoot_massive_T& arr ){
             triggerShootEffect();
-            bullet* curr1 = new BananaBullet(1);
-            curr1->setCoords(this->get_coords().x+ this->szx-10, this->get_coords().y );
-            bullet* curr2 = new BananaBullet(-1);
-            curr2->setCoords(this->get_coords().x+ this->szx-10, this->get_coords().y);
-            arr.push_back(curr1);arr.push_back(curr2);
+            bullet* curr1 = new BananaBullet(1, 2);  // 2 = тип семечек банана
+            curr1->setCoords(this->get_coords().x + this->szx - 10, this->get_coords().y);
+            
+            bullet* curr2 = new BananaBullet(-1, 2);
+            curr2->setCoords(this->get_coords().x + this->szx - 10, this->get_coords().y);
+            arr.push_back(curr1);
+            arr.push_back(curr2);
         }
 };
 
@@ -222,6 +229,33 @@ class orange: public plants{
             this->y = y;
         }
         void shoot(shoot_massive_T& arr ){
+            return;
+        }
+};
+
+class pea: public plants{
+    public:
+        pea(float sc){
+            health = 5;
+            max_health = health;
+            herotexture.loadFromFile("../images/peas.png");//загружаем картинку
+        }
+        pea(float sc,float x,float y){
+            health = 5;
+            max_health = health;
+            herotexture.loadFromFile("../images/peas.png");//загружаем картинку
+            this->x = x;
+            this->y = y;
+        }
+        void shoot(shoot_massive_T& arr ){
+            triggerShootEffect();
+            bullet* curr1 = new pea_bullet(1);  // 2 = тип семечек банана
+            curr1->setCoords(this->get_coords().x + this->szx, this->get_coords().y + 10);
+            
+            bullet* curr2 = new pea_bullet(-1);
+            curr2->setCoords(this->get_coords().x - this->szx, this->get_coords().y + 10);
+            arr.push_back(curr1);
+            arr.push_back(curr2);
             return;
         }
 };
